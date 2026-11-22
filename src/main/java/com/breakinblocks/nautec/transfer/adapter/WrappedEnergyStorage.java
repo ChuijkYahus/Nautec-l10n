@@ -8,7 +8,7 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 
 public final class WrappedEnergyStorage implements EnergyHandler {
     private final IEnergyStorage storage;
-    private final UndoJournal journal = new UndoJournal();
+    private final Journal journal = new Journal();
 
     public WrappedEnergyStorage(IEnergyStorage storage) {
         this.storage = storage;
@@ -20,7 +20,7 @@ public final class WrappedEnergyStorage implements EnergyHandler {
 
     @Override
     public long getAmountAsLong() {
-        return storage.getEnergyStored();
+        return Math.max(0, storage.getEnergyStored() - journal.taken);
     }
 
     @Override
@@ -36,44 +36,57 @@ public final class WrappedEnergyStorage implements EnergyHandler {
         }
         journal.updateSnapshots(transaction);
         int inserted = storage.receiveEnergy(amount, false);
-        journal.balance += inserted;
+        journal.inserted += inserted;
         return inserted;
     }
 
     @Override
     public int extract(int amount, TransactionContext transaction) {
         TransferPreconditions.checkNonNegative(amount);
-        if (amount == 0 || !storage.canExtract() || storage.extractEnergy(amount, true) <= 0) {
+        if (amount == 0 || !storage.canExtract()) {
+            return 0;
+        }
+        long simulated = storage.extractEnergy((int) Math.min(Integer.MAX_VALUE, journal.taken + amount), true);
+        int extracted = (int) (simulated - journal.taken);
+        if (extracted <= 0) {
             return 0;
         }
         journal.updateSnapshots(transaction);
-        int extracted = storage.extractEnergy(amount, false);
-        journal.balance -= extracted;
+        journal.taken += extracted;
         return extracted;
     }
 
-    private final class UndoJournal extends SnapshotJournal<Long> {
-        private long balance;
+    private final class Journal extends SnapshotJournal<long[]> {
+        private long inserted;
+        private long taken;
 
         @Override
-        protected Long createSnapshot() {
-            return balance;
+        protected long[] createSnapshot() {
+            return new long[] {inserted, taken};
         }
 
         @Override
-        protected void revertToSnapshot(Long snapshot) {
-            long delta = balance - snapshot;
+        protected void revertToSnapshot(long[] snapshot) {
+            long delta = inserted - snapshot[0];
             if (delta > 0) {
                 storage.extractEnergy((int) Math.min(Integer.MAX_VALUE, delta), false);
-            } else if (delta < 0) {
-                storage.receiveEnergy((int) Math.min(Integer.MAX_VALUE, -delta), false);
             }
-            balance = snapshot;
+            inserted = snapshot[0];
+            taken = snapshot[1];
         }
 
         @Override
-        protected void onRootCommit(Long originalState) {
-            balance = 0;
+        protected void onRootCommit(long[] originalState) {
+            long pending = taken;
+            inserted = 0;
+            taken = 0;
+            while (pending > 0) {
+                int extracted = storage.extractEnergy((int) Math.min(Integer.MAX_VALUE, pending), false);
+                if (extracted <= 0) {
+                    break;
+                }
+                pending -= extracted;
+            }
         }
     }
 }
