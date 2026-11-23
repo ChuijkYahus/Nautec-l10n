@@ -4,8 +4,6 @@ navigation:
   icon: nautec:biome_tank
   position: 20
   parent: getting_started/getting_started-index.md
-item_ids:
-  - nautec:biome_tank
 ---
 
 # <Color id="light_purple">生物群系箱</Color>

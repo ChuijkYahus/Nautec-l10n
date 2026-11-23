@@ -5,10 +5,14 @@ import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.content.blocks.generators.CombustionDynamoBlock;
 import com.breakinblocks.nautec.content.menus.CombustionDynamoMenu;
 import com.breakinblocks.nautec.content.recipes.CombustionAdditiveRecipe;
+import com.breakinblocks.nautec.data.NTDataMaps;
+import com.breakinblocks.nautec.data.maps.CombustionFuel;
 import com.breakinblocks.nautec.utils.DataSlots;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
-import com.breakinblocks.nautec.tags.NTTags;
+import com.breakinblocks.nautec.registries.NTFluids;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
@@ -22,11 +26,18 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 public class CombustionDynamoBlockEntity extends FeGeneratorBlockEntity implements MenuProvider {
@@ -41,7 +52,8 @@ public class CombustionDynamoBlockEntity extends FeGeneratorBlockEntity implemen
     public static final int DATA_ADDITIVE_TOTAL = 8;
     public static final int DATA_STATUS = 10;
     public static final int DATA_FUEL_PERCENT = 11;
-    public static final int DATA_COUNT = 12;
+    public static final int DATA_TICKS_PER_MB = 12;
+    public static final int DATA_COUNT = 13;
 
     private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{ADDITIVE_SLOT}, new int[0]);
     private static final SlotRoles FLUID_ROLES = SlotRoles.of(new int[]{0, 1}, new int[0]);
@@ -71,6 +83,10 @@ public class CombustionDynamoBlockEntity extends FeGeneratorBlockEntity implemen
                 case DATA_ADDITIVE_TOTAL + 1 -> DataSlots.high(additiveTotal);
                 case DATA_STATUS -> status.ordinal();
                 case DATA_FUEL_PERCENT -> Math.round(fuelMultiplier * 100);
+                case DATA_TICKS_PER_MB -> {
+                    CombustionFuel fuel = fuelOf(getFluidTank().getFluid());
+                    yield fuel != null ? fuel.ticksPerMb() : 0;
+                }
                 default -> 0;
             };
         }
@@ -88,7 +104,7 @@ public class CombustionDynamoBlockEntity extends FeGeneratorBlockEntity implemen
     public CombustionDynamoBlockEntity(BlockPos pos, BlockState state) {
         super(NTBlockEntityTypes.COMBUSTION_DYNAMO.get(), pos, state, BUFFER);
         addItemHandler(1, (slot, stack) -> isAdditive(stack));
-        addFluidTank(NTConfig.combustionDynamoTankCapacity, stack -> stack.is(NTTags.Fluids.OIL));
+        addFluidTank(NTConfig.combustionDynamoTankCapacity, stack -> fuelOf(stack) != null);
         addSecondaryFluidTank(NTConfig.combustionDynamoTankCapacity, stack -> stack.is(FluidTags.WATER));
     }
 
@@ -140,8 +156,34 @@ public class CombustionDynamoBlockEntity extends FeGeneratorBlockEntity implemen
         return level.recipeAccess().getRecipeFor(CombustionAdditiveRecipe.Type.INSTANCE, new SingleRecipeInput(stack), level);
     }
 
-    public static int baseRate() {
-        return NTConfig.combustionDynamoOutput;
+    public static List<FuelGroup> fuelGroups() {
+        Map<CombustionFuel, List<Fluid>> groups = new LinkedHashMap<>();
+        List<Map.Entry<ResourceKey<Fluid>, CombustionFuel>> entries = new ArrayList<>(BuiltInRegistries.FLUID.getDataMap(NTDataMaps.COMBUSTION_FUELS).entrySet());
+        entries.sort(Comparator.comparing(entry -> entry.getKey().identifier()));
+        for (Map.Entry<ResourceKey<Fluid>, CombustionFuel> entry : entries) {
+            Fluid fluid = BuiltInRegistries.FLUID.getValue(entry.getKey());
+            if (fluid != null && fluid.isSource(fluid.defaultFluidState())) {
+                groups.computeIfAbsent(entry.getValue(), key -> new ArrayList<>()).add(fluid);
+            }
+        }
+        List<FuelGroup> result = new ArrayList<>(groups.size());
+        for (Map.Entry<CombustionFuel, List<Fluid>> group : groups.entrySet()) {
+            result.add(new FuelGroup(List.copyOf(group.getValue()), group.getKey()));
+        }
+        result.sort(Comparator.comparingLong(group -> (long) group.fuel().output() * group.fuel().ticksPerMb()));
+        return result;
+    }
+
+    public record FuelGroup(List<Fluid> fluids, CombustionFuel fuel) {
+    }
+
+    public static int oilRate() {
+        CombustionFuel oil = fuelOf(new FluidStack(NTFluids.OIL.getStillFluid(), 1));
+        return oil != null ? oil.output() : 0;
+    }
+
+    public static @Nullable CombustionFuel fuelOf(FluidStack stack) {
+        return stack.isEmpty() ? null : stack.getFluid().builtInRegistryHolder().getData(NTDataMaps.COMBUSTION_FUELS);
     }
 
     @Override
@@ -156,7 +198,8 @@ public class CombustionDynamoBlockEntity extends FeGeneratorBlockEntity implemen
 
     private void burn(ServerLevel level) {
         this.rate = 0;
-        if (getFluidTank().isEmpty()) {
+        CombustionFuel grade = fuelOf(getFluidTank().getFluid());
+        if (grade == null) {
             status = Status.NO_OIL;
             return;
         }
@@ -167,15 +210,16 @@ public class CombustionDynamoBlockEntity extends FeGeneratorBlockEntity implemen
         if (additiveLeft <= 0) {
             loadAdditive(level);
         }
-        int output = Math.round(baseRate() * getOutputMultiplier());
+        int output = Math.round(grade.output() * getOutputMultiplier());
         if (space() < output) {
             status = Status.BUFFER_FULL;
             return;
         }
         float fuel = getFuelMultiplier();
-        int nextOil = oilDebt + Math.round(fuel * MILLI / Math.max(1, NTConfig.combustionDynamoTicksPerOil));
+        int perMb = grade.ticksPerMb() * MILLI;
+        int nextOil = oilDebt + Math.round(fuel * MILLI);
         int nextWater = waterDebt + Math.round(fuel * MILLI * NTConfig.combustionDynamoWaterPerTick);
-        if (getFluidTank().getFluidAmount() < ceilMb(nextOil)) {
+        if (getFluidTank().getFluidAmount() < (nextOil + perMb - 1) / perMb) {
             status = Status.NO_OIL;
             return;
         }
@@ -183,7 +227,7 @@ public class CombustionDynamoBlockEntity extends FeGeneratorBlockEntity implemen
             status = Status.NO_WATER;
             return;
         }
-        int oil = nextOil / MILLI;
+        int oil = nextOil / perMb;
         int water = nextWater / MILLI;
         if (oil > 0) {
             getFluidTank().drain(oil);
@@ -191,7 +235,7 @@ public class CombustionDynamoBlockEntity extends FeGeneratorBlockEntity implemen
         if (water > 0) {
             getSecondaryFluidTank().drain(water);
         }
-        this.oilDebt = nextOil - oil * MILLI;
+        this.oilDebt = nextOil - oil * perMb;
         this.waterDebt = nextWater - water * MILLI;
         generate(output);
         this.rate = output;

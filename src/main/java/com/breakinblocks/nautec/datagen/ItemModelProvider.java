@@ -126,6 +126,7 @@ public class ItemModelProvider extends ModelProvider {
         basicItem(NTItems.SALT.get());
         basicItem(NTItems.KELP_SLURRY.get());
         basicItem(NTItems.ALGAL_LIPID.get());
+        basicItem(NTItems.CRUDE_GLYCERIN.get());
         basicItem(NTItems.AIR_BOTTLE.get());
         basicItem(NTItems.BUBBLE_CAPSULE.get());
 

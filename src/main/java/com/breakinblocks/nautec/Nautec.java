@@ -173,6 +173,7 @@ public final class Nautec {
     private void registerDataMaps(RegisterDataMapTypesEvent event) {
         event.register(NTDataMaps.BACTERIA_OBTAINING);
         event.register(NTDataMaps.STORAGE_BLOCKS);
+        event.register(NTDataMaps.COMBUSTION_FUELS);
     }
 
     private void onRegisterAugments(RegisterEvent event) {

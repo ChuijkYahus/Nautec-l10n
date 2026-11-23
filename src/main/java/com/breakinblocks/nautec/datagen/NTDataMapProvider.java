@@ -3,8 +3,10 @@ package com.breakinblocks.nautec.datagen;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.data.NTDataMaps;
 import com.breakinblocks.nautec.data.maps.BacteriaObtainValue;
+import com.breakinblocks.nautec.data.maps.CombustionFuel;
 import com.breakinblocks.nautec.registries.NTBacterias;
 import com.breakinblocks.nautec.registries.NTBlocks;
+import com.breakinblocks.nautec.tags.NTTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
@@ -49,6 +51,10 @@ public class NTDataMapProvider extends DataMapProvider {
         storageBlock(Items.DRIED_KELP, Items.DRIED_KELP_BLOCK);
         storageBlock(Items.SLIME_BALL, Items.SLIME_BLOCK);
         storageBlock(Items.HONEYCOMB, Items.HONEYCOMB_BLOCK);
+
+        builder(NTDataMaps.COMBUSTION_FUELS)
+                .add(NTTags.Fluids.OIL, new CombustionFuel(320, 10), false)
+                .add(NTTags.Fluids.BIODIESEL, new CombustionFuel(640, 12), false);
     }
 
     private void storageBlock(Item product, Item block) {

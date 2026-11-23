@@ -22,6 +22,7 @@ public final class NTTags {
     public static final class Fluids {
         public static final TagKey<Fluid> OXYGEN = TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", "oxygen"));
         public static final TagKey<Fluid> OIL = TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", "oil"));
+        public static final TagKey<Fluid> BIODIESEL = TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", "biodiesel"));
         public static final TagKey<Fluid> EXPERIENCE = TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", "experience"));
     }
 

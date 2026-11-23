@@ -4,8 +4,6 @@ navigation:
   icon: nautec:charger
   position: 6
   parent: laser_chemistry/laser_chemistry-index.md
-item_ids:
-  - nautec:charger
 ---
 
 # <Color id="light_purple">充能器</Color>

@@ -4,8 +4,6 @@ navigation:
   icon: nautec:bacterial_fuel_cell
   position: 13
   parent: aquatic_biology/aquatic_biology-index.md
-item_ids:
-  - nautec:bacterial_fuel_cell
 ---
 
 # <Color id="light_purple">细菌燃料单元</Color>

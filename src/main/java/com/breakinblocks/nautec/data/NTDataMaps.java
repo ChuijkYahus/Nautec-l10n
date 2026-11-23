@@ -2,10 +2,12 @@ package com.breakinblocks.nautec.data;
 
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.data.maps.BacteriaObtainValue;
+import com.breakinblocks.nautec.data.maps.CombustionFuel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
 
 public final class NTDataMaps {
@@ -24,6 +26,15 @@ public final class NTDataMaps {
             BuiltInRegistries.ITEM.byNameCodec()
     ).synced(
             BuiltInRegistries.ITEM.byNameCodec(),
+            false
+    ).build();
+
+    public static final DataMapType<Fluid, CombustionFuel> COMBUSTION_FUELS = DataMapType.builder(
+            Nautec.rl("combustion_fuels"),
+            Registries.FLUID,
+            CombustionFuel.CODEC
+    ).synced(
+            CombustionFuel.CODEC,
             false
     ).build();
 }

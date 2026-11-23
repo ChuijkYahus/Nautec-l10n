@@ -19,6 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -28,6 +29,7 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -84,6 +86,25 @@ public final class DrainTests {
     }
 
     public static void register(NTTestRegistrar r) {
+        r.add("drain/breaking_a_formed_wall_drops_the_wall", 20, helper -> {
+            buildFormedDrain(helper, false);
+            BlockPos corner = DRAIN_C.offset(1, 0, 1);
+            helper.assertTrue(helper.getBlockState(corner).is(NTBlocks.DRAIN_PART.get()), "the wall is a formed part before breaking");
+            helper.getLevel().destroyBlock(helper.absolutePos(corner), true);
+            int walls = 0;
+            int other = 0;
+            for (ItemEntity drop : helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(helper.absolutePos(DRAIN_C)).inflate(3))) {
+                if (drop.getItem().is(NTBlocks.DRAIN_WALL.asItem())) {
+                    walls += drop.getItem().getCount();
+                } else {
+                    other += drop.getItem().getCount();
+                }
+            }
+            helper.assertValueEqual(walls, 1, "Deep Sea Drain Walls dropped");
+            helper.assertValueEqual(other, 0, "other items dropped");
+            helper.succeed();
+        });
+
         r.add("drain/wrench_on_any_face_sets_an_outward_port_and_reaims", 200, helper -> {
             buildFormedDrain(helper, false);
             BlockPos abs = helper.absolutePos(PORT_PART);

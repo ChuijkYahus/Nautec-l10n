@@ -4,8 +4,6 @@ navigation:
   icon: nautec:petri_dish
   position: 0
   parent: aquatic_biology/aquatic_biology-index.md
-item_ids:
-  - nautec:petri_dish
 ---
 
 # <Color id="light_purple">细菌导论</Color>

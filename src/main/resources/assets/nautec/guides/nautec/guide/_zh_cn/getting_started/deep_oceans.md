@@ -4,8 +4,6 @@ navigation:
   icon: nautec:luminescent_algae
   position: 11
   parent: getting_started/getting_started-index.md
-item_ids:
-  - nautec:hydrothermal_vent
 ---
 
 # <Color id="light_purple">海洋深处</Color>
