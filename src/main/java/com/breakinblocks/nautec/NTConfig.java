@@ -564,20 +564,12 @@ public final class NTConfig {
             .comment("The item a Thermal Vent Tap leaves behind for each ventTapSaltWaterPerSalt mB it boils. Leave it empty, or set it to minecraft:air, for none. An id that is not a registered item falls back to nautec:salt")
             .define("ventTapSaltItem", "nautec:salt", entry -> entry instanceof String);
 
-    private static final ModConfigSpec.IntValue COMBUSTION_DYNAMO_OUTPUT = BUILDER
-            .comment("The FE per tick a Combustion Dynamo makes while it burns oil and water, before any additive")
-            .defineInRange("combustionDynamoOutput", 320, 0, 10_000_000);
-
-    private static final ModConfigSpec.IntValue COMBUSTION_DYNAMO_TICKS_PER_OIL = BUILDER
-            .comment("How many ticks a Combustion Dynamo runs on each mB of oil, before any additive")
-            .defineInRange("combustionDynamoTicksPerOil", 10, 1, 100_000);
-
     private static final ModConfigSpec.IntValue COMBUSTION_DYNAMO_WATER_PER_TICK = BUILDER
             .comment("The mB of water a Combustion Dynamo uses each tick it runs, before any additive")
             .defineInRange("combustionDynamoWaterPerTick", 1, 0, 100_000);
 
     private static final ModConfigSpec.IntValue COMBUSTION_DYNAMO_TANK_CAPACITY = BUILDER
-            .comment("The mB each of a Combustion Dynamo's oil and water tanks holds")
+            .comment("The mB each of a Combustion Dynamo's fuel and water tanks holds")
             .defineInRange("combustionDynamoTankCapacity", 8_000, 1_000, 1_000_000);
 
     private static final ModConfigSpec.LongValue FUSION_IGNITION_ENERGY = BUILDER
@@ -1401,8 +1393,6 @@ public final class NTConfig {
     public static int ventTapSaltWaterPerTick = 10;
     public static int ventTapSaltWaterPerSalt = 1_000;
     public static String ventTapSaltItem = "nautec:salt";
-    public static int combustionDynamoOutput = 320;
-    public static int combustionDynamoTicksPerOil = 10;
     public static int combustionDynamoWaterPerTick = 1;
     public static int combustionDynamoTankCapacity = 8_000;
     public static long fusionIgnitionEnergy = 5_000_000L;
@@ -1842,8 +1832,6 @@ public final class NTConfig {
         ventTapSaltWaterPerTick = value(VENT_TAP_SALT_WATER_PER_TICK);
         ventTapSaltWaterPerSalt = value(VENT_TAP_SALT_WATER_PER_SALT);
         ventTapSaltItem = value(VENT_TAP_SALT_ITEM);
-        combustionDynamoOutput = value(COMBUSTION_DYNAMO_OUTPUT);
-        combustionDynamoTicksPerOil = value(COMBUSTION_DYNAMO_TICKS_PER_OIL);
         combustionDynamoWaterPerTick = value(COMBUSTION_DYNAMO_WATER_PER_TICK);
         combustionDynamoTankCapacity = value(COMBUSTION_DYNAMO_TANK_CAPACITY);
         fusionIgnitionEnergy = value(FUSION_IGNITION_ENERGY);

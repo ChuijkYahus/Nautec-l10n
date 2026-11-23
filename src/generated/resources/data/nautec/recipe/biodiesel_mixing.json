@@ -1,0 +1,22 @@
+{
+  "type": "nautec:mixing",
+  "duration": 200,
+  "fluid_ingredient": {
+    "amount": 1000,
+    "id": "nautec:oil"
+  },
+  "fluid_result": {
+    "amount": 750,
+    "id": "nautec:biodiesel"
+  },
+  "ingredients": [
+    {
+      "ingredient": {
+        "tag": "c:dusts/salt"
+      }
+    }
+  ],
+  "result": {
+    "id": "nautec:crude_glycerin"
+  }
+}

@@ -157,7 +157,7 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
                 7, NTBlocks.POLISHED_PRISMARINE.get(),
                 8, NTBlocks.AQUARINE_STEEL_BLOCK.get()
         )));
-        drainPartDrop(NTBlocks.DRAIN_PART.get());
+        add(NTBlocks.DRAIN_PART.get(), createSingleItemTable(NTBlocks.DRAIN_WALL.get()));
         dropSelf(NTBlocks.BACTERIAL_CONTAINMENT_SHIELD.get());
         dropSelf(NTBlocks.INCUBATOR.get());
         dropSelf(NTBlocks.MUTATOR.get());
@@ -329,21 +329,6 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
                         this.applyExplosionCondition(
                                 block,
                                 builder
-                        )
-                );
-    }
-
-    protected LootTable.Builder drainPartDrop(
-            Block block
-    ) {
-        LootPool.lootPool()
-                .setRolls(ConstantValue.exactly(1.0F));
-        return LootTable.lootTable()
-                .withPool(
-                        this.applyExplosionCondition(
-                                block,
-                                LootPool.lootPool()
-                                        .setRolls(ConstantValue.exactly(1.0F)).add(LootItem.lootTableItem(block))
                         )
                 );
     }

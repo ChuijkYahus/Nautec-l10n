@@ -40,7 +40,7 @@ public class CombustionAdditiveCategory extends AbstractRecipeCategory<Combustio
         int line = Minecraft.getInstance().font.lineHeight;
         Component[] text = {
                 Component.translatable("nautec.jei.combustion.output_multiplier", format(recipe.outputMultiplier())),
-                Component.translatable("nautec.jei.combustion.output", Math.round(CombustionDynamoBlockEntity.baseRate() * recipe.outputMultiplier())),
+                Component.translatable("nautec.jei.combustion.output_on_oil", Math.round(CombustionDynamoBlockEntity.oilRate() * recipe.outputMultiplier())),
                 Component.translatable("nautec.jei.combustion.fuel_multiplier", format(recipe.fuelMultiplier())),
                 Component.translatable("nautec.jei.combustion.duration", recipe.duration() / 20),
         };

@@ -15,9 +15,11 @@ import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -25,6 +27,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
@@ -37,7 +41,57 @@ public final class IssueTrackerTests {
     private IssueTrackerTests() {
     }
 
+    private static void breakAs(NTGameTestHelper helper, Player player, BlockPos relative) {
+        ServerLevel level = helper.getLevel();
+        BlockPos pos = helper.absolutePos(relative);
+        BlockState state = level.getBlockState(pos);
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        ItemStack tool = player.getMainHandItem().copy();
+        BlockState adjusted = state.getBlock().playerWillDestroy(level, pos, state, player);
+        boolean canHarvest = !player.getAbilities().instabuild && adjusted.canHarvestBlock(level, pos, player);
+        boolean removed = adjusted.onDestroyedByPlayer(level, pos, player, canHarvest, level.getFluidState(pos));
+        if (removed) {
+            adjusted.getBlock().destroy(level, pos, adjusted);
+        }
+        if (removed && canHarvest) {
+            adjusted.getBlock().playerDestroy(level, player, pos, adjusted, blockEntity, tool);
+        }
+    }
+
+    private static int analyzerDrops(NTGameTestHelper helper, BlockPos relative) {
+        int count = 0;
+        for (ItemEntity drop : helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(helper.absolutePos(relative)).inflate(3))) {
+            helper.assertTrue(drop.getItem().is(NTBlocks.BACTERIAL_ANALYZER.asItem()), "unexpected drop " + drop.getItem());
+            count += drop.getItem().getCount();
+        }
+        return count;
+    }
+
     public static void register(NTTestRegistrar r) {
+        r.add("issues/breaking_the_analyzer_microscope_drops_the_analyzer", 20, helper -> {
+            BlockPos base = new BlockPos(4, 2, 4);
+            helper.setBlock(base, NTBlocks.BACTERIAL_ANALYZER.get());
+            helper.assertBlockPresent(NTBlocks.BACTERIAL_ANALYZER_TOP.get(), base.above());
+            Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+            player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_PICKAXE));
+            breakAs(helper, player, base.above());
+            helper.assertBlockNotPresent(NTBlocks.BACTERIAL_ANALYZER_TOP.get(), base.above());
+            helper.assertBlockNotPresent(NTBlocks.BACTERIAL_ANALYZER.get(), base);
+            helper.assertValueEqual(analyzerDrops(helper, base), 1, "Bacterial Analyzers dropped");
+            helper.succeed();
+        });
+
+        r.add("issues/breaking_the_analyzer_microscope_in_creative_drops_nothing", 20, helper -> {
+            BlockPos base = new BlockPos(4, 2, 4);
+            helper.setBlock(base, NTBlocks.BACTERIAL_ANALYZER.get());
+            Player player = helper.makeMockPlayer(GameType.CREATIVE);
+            player.getAbilities().instabuild = true;
+            breakAs(helper, player, base.above());
+            helper.assertBlockNotPresent(NTBlocks.BACTERIAL_ANALYZER.get(), base);
+            helper.assertValueEqual(analyzerDrops(helper, base), 0, "Bacterial Analyzers dropped in creative");
+            helper.succeed();
+        });
+
         r.add("issues/spawn_eggs_create_their_mobs", 20, helper -> {
             Item[] eggs = {NTItems.SILT_SKIPPER_SPAWN_EGG.get(), NTItems.LANTERN_JELLY_SPAWN_EGG.get(),
                     NTItems.VENT_CRAWLER_SPAWN_EGG.get(), NTItems.ABYSSAL_MAW_SPAWN_EGG.get()};

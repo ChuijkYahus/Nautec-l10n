@@ -100,8 +100,8 @@ public class CombustionDynamoScreen extends NTMachineScreen<CombustionDynamoBloc
             float fuel = dynamo.getAdditiveLeft() > 0 ? dynamo.getFuelPercent() / 100F : 1F;
             graphics.renderComponentTooltip(this.font, List.of(
                     Component.translatable("nautec.combustion_dynamo.rate.desc"),
-                    Component.translatable("nautec.combustion_dynamo.oil_use",
-                            String.format("%.2f", fuel * 20F / Math.max(1, NTConfig.combustionDynamoTicksPerOil))).withStyle(ChatFormatting.GRAY),
+                    Component.translatable("nautec.combustion_dynamo.fuel_use",
+                            String.format("%.2f", dynamo.getTicksPerMb() > 0 ? fuel * 20F / dynamo.getTicksPerMb() : 0F)).withStyle(ChatFormatting.GRAY),
                     Component.translatable("nautec.combustion_dynamo.water_use",
                             String.format("%.1f", fuel * 20F * NTConfig.combustionDynamoWaterPerTick)).withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);

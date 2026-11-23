@@ -4,8 +4,6 @@ navigation:
   icon: nautec:prismarine_sand
   position: 0
   parent: getting_started/getting_started-index.md
-item_ids:
-  - nautec:prismarine_sand
 ---
 
 # <Color id="light_purple">介绍</Color>

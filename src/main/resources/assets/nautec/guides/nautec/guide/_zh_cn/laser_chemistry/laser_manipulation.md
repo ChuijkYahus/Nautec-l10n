@@ -4,9 +4,6 @@ navigation:
   icon: nautec:laser_junction
   position: 0
   parent: laser_chemistry/laser_chemistry-index.md
-item_ids:
-  - nautec:prismarine_laser_relay
-  - nautec:laser_junction
 ---
 
 # <Color id="light_purple">传输激光功率</Color>

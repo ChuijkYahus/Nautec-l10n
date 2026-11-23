@@ -4,8 +4,6 @@ navigation:
   icon: nautec:incubator
   position: 7
   parent: aquatic_biology/aquatic_biology-index.md
-item_ids:
-  - nautec:incubator
 ---
 
 # <Color id="light_purple">培养机</Color>

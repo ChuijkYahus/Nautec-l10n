@@ -329,6 +329,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.confined_spawner.xp.desc", "Each experience point the mobs would drop becomes %s mB. Experience made while the tank is full is lost.");
         add("nautec.confined_spawner.xp.drain", "Pipe it out, or right-click the spawner with an empty bucket.");
         addFluidType(NTFluids.OIL.getFluidType(), "Oil");
+        addFluidType(NTFluids.BIODIESEL.getFluidType(), "Biodiesel");
 
         addItem(PRISM_MONOCLE, "Prism Monocle");
         addItem(EYE_OF_THE_SEA, "Eye of the Sea");
@@ -367,6 +368,7 @@ public class EnUsProvider extends LanguageProvider {
         addItem(NTFluids.SALT_WATER.getDeferredBucket(), "Salt Water Bucket");
         addItem(NTFluids.EAS.getDeferredBucket(), "Electrolyte Algae Serum (EAS) Bucket");
         addItem(NTFluids.OIL.getDeferredBucket(), "Oil Bucket");
+        addItem(NTFluids.BIODIESEL.getDeferredBucket(), "Biodiesel Bucket");
         addItem(GLASS_VIAL, "Glass Vial");
         addItem(MOB_SAMPLER, "Mob Sampler");
         addItem(MOB_SAMPLE, "Mob Sample");
@@ -596,6 +598,7 @@ public class EnUsProvider extends LanguageProvider {
         addBlock(NTBlocks.COMBUSTION_DYNAMO, "Combustion Dynamo");
         addItem(KELP_SLURRY, "Kelp Slurry");
         addItem(ALGAL_LIPID, "Algal Lipid");
+        addItem(CRUDE_GLYCERIN, "Crude Glycerin");
         addBlock(NTBlocks.FUSION_CASING, "Fusion Casing");
         addBlock(NTBlocks.AQUAMARINE_STRUCTURAL_GLASS, "Aquarine Structural Glass");
         addBlock(NTBlocks.CONTAINMENT_COIL, "Containment Coil");
@@ -1092,6 +1095,7 @@ public class EnUsProvider extends LanguageProvider {
         add("augment_type.nautec.ender_magnet", "Ender Magnet");
 
         addBlock("oil_fluid", "Oil");
+        addBlock("biodiesel_fluid", "Biodiesel");
         addBlock("saltwater_fluid", "Salt Water");
         addBlock("eas_fluid", "Electrolyte Algae Serum");
         addBlock("etching_acid_fluid", "Etching Acid");
@@ -1292,24 +1296,25 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.vent_tap.status.no_fuel", "Needs Salt Water");
         add("nautec.vent_tap.status.buffer_full", "Buffer full");
         add("nautec.combustion_dynamo.status.running", "Burning");
-        add("nautec.jade.combustion_dynamo.oil", "Oil: %s / %s mB");
+        add("nautec.jade.combustion_dynamo.oil", "Fuel: %s / %s mB");
         add("nautec.jade.combustion_dynamo.water", "Water: %s / %s mB");
-        add("nautec.combustion_dynamo.status.no_oil", "Needs oil");
+        add("nautec.combustion_dynamo.status.no_oil", "Needs fuel");
         add("nautec.combustion_dynamo.status.no_water", "Needs water");
         add("nautec.combustion_dynamo.status.buffer_full", "Buffer full");
         add("nautec.combustion_dynamo.rate", "%s FE/t");
         add("nautec.combustion_dynamo.rate.desc", "Energy made each tick");
-        add("nautec.combustion_dynamo.oil_use", "Oil: %s mB/s");
+        add("nautec.combustion_dynamo.fuel_use", "Fuel: %s mB/s");
         add("nautec.combustion_dynamo.water_use", "Water: %s mB/s");
         add("nautec.combustion_dynamo.fe", "%s / %s FE");
         add("nautec.combustion_dynamo.boosted", "Boosted");
         add("nautec.combustion_dynamo.additive", "Additive");
-        add("nautec.combustion_dynamo.additive.desc", "Additives boost output and oil/water use. See JEI for values.");
+        add("nautec.combustion_dynamo.additive.desc", "Additives boost output and fuel/water use. See JEI for values.");
         add("nautec.combustion_dynamo.additive.left", "%s s of boost left");
         add("nautec.jei.category.combustion_dynamo", "Combustion Dynamo");
         add("nautec.jei.category.combustion_additive", "Combustion Additive");
         add("nautec.jei.combustion.output", "%s FE/t");
-        add("nautec.jei.combustion.oil", "%s mB oil every %s ticks");
+        add("nautec.jei.combustion.fuel", "%s mB every %s ticks");
+        add("nautec.jei.combustion.output_on_oil", "%s FE/t on oil");
         add("nautec.jei.combustion.water", "%s mB water per tick");
         add("nautec.jei.combustion.output_multiplier", "Output x%s");
         add("nautec.jei.combustion.fuel_multiplier", "Fuel use x%s");

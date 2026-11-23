@@ -1591,6 +1591,21 @@ public class RecipesProvider extends RecipeProvider {
                 .fluidResult(new FluidStackTemplate(NTFluids.OIL.getStillFluid(), 1000))
                 .save(pRecipeOutput, key("oil_from_algal_lipid_mixing"));
 
+        MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.CRUDE_GLYCERIN.get(), 1))
+                .ingredients(new IngredientWithCount(tag(NTTags.Items.DUSTS_SALT), 1))
+                .duration(200)
+                .fluidIngredient(new FluidStackTemplate(NTFluids.OIL.getStillFluid(), 1000))
+                .fluidResult(new FluidStackTemplate(NTFluids.BIODIESEL.getStillFluid(), 750))
+                .save(pRecipeOutput, key("biodiesel_mixing"));
+
+        MixingRecipeBuilder.newRecipe()
+                .ingredients(iwcFromItemLike(NTItems.CRUDE_GLYCERIN.get(), 2),
+                        iwcFromItemLike(Items.BONE_MEAL, 1))
+                .duration(150)
+                .fluidIngredient(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 1000))
+                .fluidResult(new FluidStackTemplate(NTFluids.ETCHING_ACID.getStillFluid(), 1000))
+                .save(pRecipeOutput, key("etching_acid_from_glycerin_mixing"));
+
         MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.PRESSURE_SYNTHESIZER.get(), 1))
                 .ingredients(iwcFromItemLike(NTItems.FLAWLESS_PRISMARINE_CRYSTAL.get(), 1))
                 .duration(400)

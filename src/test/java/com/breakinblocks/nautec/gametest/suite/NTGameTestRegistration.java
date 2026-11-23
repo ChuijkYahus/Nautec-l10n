@@ -101,8 +101,8 @@ public final class NTGameTestRegistration {
         BacterialEnrichmentCatalystTests.register(r);
         IssueTrackerTests.register(r);
         TransferAdapterTests.register(r);
-        if (r.registeredCount() != 868) {
-            throw new IllegalStateException("Expected 868 Nautec suite tests, registered " + r.registeredCount());
+        if (r.registeredCount() != 875) {
+            throw new IllegalStateException("Expected 875 Nautec suite tests, registered " + r.registeredCount());
         }
         return r.functions();
     }

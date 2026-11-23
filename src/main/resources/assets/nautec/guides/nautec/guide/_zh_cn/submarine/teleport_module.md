@@ -4,8 +4,6 @@ navigation:
   icon: nautec:teleport_module
   position: 14
   parent: submarine/submarine-index.md
-item_ids:
-  - nautec:teleport_module
 ---
 
 # <Color id="light_purple">传送模块</Color>

@@ -4,13 +4,6 @@ navigation:
   icon: nautec:combustion_dynamo
   position: 16
   parent: getting_started/getting_started-index.md
-item_ids:
-  - nautec:combustion_dynamo
-  - nautec:kelp_slurry
-  - nautec:algal_lipid
-  - nautec:fiery_crystal
-  - nautec:crystalline_combustion_booster
-  - nautec:stellar_combustion_booster
 ---
 
 # <Color id="light_purple">燃烧发电机</Color>

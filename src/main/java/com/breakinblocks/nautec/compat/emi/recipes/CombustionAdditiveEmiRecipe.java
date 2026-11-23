@@ -21,7 +21,7 @@ public class CombustionAdditiveEmiRecipe extends NTEmiRecipe<CombustionAdditiveR
         inputs.add(additive);
         this.text = new Component[]{
                 Component.translatable("nautec.jei.combustion.output_multiplier", format(recipe.outputMultiplier())),
-                Component.translatable("nautec.jei.combustion.output", Math.round(CombustionDynamoBlockEntity.baseRate() * recipe.outputMultiplier())),
+                Component.translatable("nautec.jei.combustion.output_on_oil", Math.round(CombustionDynamoBlockEntity.oilRate() * recipe.outputMultiplier())),
                 Component.translatable("nautec.jei.combustion.fuel_multiplier", format(recipe.fuelMultiplier())),
                 Component.translatable("nautec.jei.combustion.duration", recipe.duration() / 20),
         };

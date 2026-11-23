@@ -70,6 +70,15 @@ public class BacterialAnalyzerTopBlock extends Block {
     }
 
     @Override
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        BlockPos below = pos.below();
+        if (!level.isClientSide() && level.getBlockState(below).getBlock() instanceof BacterialAnalyzerBlock) {
+            level.destroyBlock(below, !player.isCreative(), player);
+        }
+        return super.playerWillDestroy(level, pos, state, player);
+    }
+
+    @Override
     public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
         return NTBlocks.BACTERIAL_ANALYZER.toStack();
     }

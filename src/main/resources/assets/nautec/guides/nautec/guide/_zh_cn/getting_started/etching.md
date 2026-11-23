@@ -4,10 +4,6 @@ navigation:
   icon: nautec:rusty_crate
   position: 6
   parent: getting_started/getting_started-index.md
-item_ids:
-  - nautec:etching_acid_bucket
-  - nautec:crate
-  - nautec:rusty_crate
 ---
 
 # <Color id="light_purple">板条箱与蚀刻</Color>

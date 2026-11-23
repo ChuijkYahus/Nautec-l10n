@@ -4,8 +4,6 @@ navigation:
   icon: nautec:atlantean_rifle
   position: 5
   parent: deep_engineering/deep_engineering-index.md
-item_ids:
-  - nautec:atlantean_rifle
 ---
 
 # <Color id="light_purple">海洋步枪</Color>

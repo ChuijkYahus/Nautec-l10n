@@ -4,13 +4,6 @@ navigation:
   icon: nautec:eas_bucket
   position: 3
   parent: laser_chemistry/laser_chemistry-index.md
-item_ids:
-  - nautec:eas_bucket
-  - nautec:saltwater_bucket
-  - nautec:oil_bucket
-  - nautec:glass_vial
-  - nautec:eas_vial
-  - nautec:salt
 ---
 
 # <Color id="light_purple">化工流体</Color>

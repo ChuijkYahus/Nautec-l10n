@@ -1,0 +1,12 @@
+{
+  "values": {
+    "#c:biodiesel": {
+      "output": 640,
+      "ticks_per_mb": 12
+    },
+    "#c:oil": {
+      "output": 320,
+      "ticks_per_mb": 10
+    }
+  }
+}

@@ -6,10 +6,8 @@ import com.breakinblocks.nautec.compat.emi.NTEmiPlugin;
 import com.breakinblocks.nautec.compat.emi.NTEmiRecipe;
 import com.breakinblocks.nautec.compat.emi.NTEmiStacks;
 import com.breakinblocks.nautec.content.blockentities.generators.CombustionDynamoBlockEntity;
-import com.breakinblocks.nautec.tags.NTTags;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +17,7 @@ import net.minecraft.world.level.material.Fluids;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CombustionFuelEmiRecipe extends NTEmiRecipe<CombustionFuelEmiRecipe.Fuel> {
+public class CombustionFuelEmiRecipe extends NTEmiRecipe<CombustionDynamoBlockEntity.FuelGroup> {
     private static final int WIDTH = 150;
     private static final int AMOUNT = 1000;
 
@@ -27,15 +25,12 @@ public class CombustionFuelEmiRecipe extends NTEmiRecipe<CombustionFuelEmiRecipe
     private final EmiStack water;
     private final Component[] text;
 
-    public CombustionFuelEmiRecipe() {
-        super(NTEmiPlugin.COMBUSTION_DYNAMO, ResourceLocation.fromNamespaceAndPath("nautec", "/combustion_dynamo/fuel"), new Fuel(),
+    public CombustionFuelEmiRecipe(CombustionDynamoBlockEntity.FuelGroup group) {
+        super(NTEmiPlugin.COMBUSTION_DYNAMO, ResourceLocation.fromNamespaceAndPath("nautec", "/combustion_dynamo/" + BuiltInRegistries.FLUID.getKey(group.fluids().getFirst()).toString().replace(':', '/')), group,
                 WIDTH, 22 + 3 * EmiCanvas.lineHeight());
         List<EmiStack> oils = new ArrayList<>();
-        for (Holder<Fluid> holder : BuiltInRegistries.FLUID.getTagOrEmpty(NTTags.Fluids.OIL)) {
-            Fluid fluid = holder.value();
-            if (fluid.isSource(fluid.defaultFluidState())) {
-                oils.add(EmiStack.of(fluid, AMOUNT));
-            }
+        for (Fluid fluid : group.fluids()) {
+            oils.add(EmiStack.of(fluid, AMOUNT));
         }
         this.oil = EmiIngredient.of(oils);
         this.water = EmiStack.of(Fluids.WATER, AMOUNT);
@@ -51,8 +46,8 @@ public class CombustionFuelEmiRecipe extends NTEmiRecipe<CombustionFuelEmiRecipe
         }
         inputs.add(water);
         this.text = new Component[]{
-                Component.translatable("nautec.jei.combustion.output", CombustionDynamoBlockEntity.baseRate()),
-                Component.translatable("nautec.jei.combustion.oil", 1, NTConfig.combustionDynamoTicksPerOil),
+                Component.translatable("nautec.jei.combustion.output", group.fuel().output()),
+                Component.translatable("nautec.jei.combustion.fuel", 1, group.fuel().ticksPerMb()),
                 Component.translatable("nautec.jei.combustion.water", NTConfig.combustionDynamoWaterPerTick),
         };
         for (Component line : text) {
@@ -69,8 +64,5 @@ public class CombustionFuelEmiRecipe extends NTEmiRecipe<CombustionFuelEmiRecipe
         for (int i = 0; i < text.length; i++) {
             canvas.text(text[i], 0, 22 + i * line, width, EmiCanvas.Align.CENTER, EmiCanvas.WHITE, true);
         }
-    }
-
-    public record Fuel() {
     }
 }

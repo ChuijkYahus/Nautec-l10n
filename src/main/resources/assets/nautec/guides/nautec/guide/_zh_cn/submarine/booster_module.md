@@ -4,8 +4,6 @@ navigation:
   icon: nautec:booster_module
   position: 9
   parent: submarine/submarine-index.md
-item_ids:
-  - nautec:booster_module
 ---
 
 # <Color id="light_purple">助推模块</Color>

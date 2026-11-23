@@ -4,8 +4,6 @@ navigation:
   icon: nautec:focusing_lens
   position: 0
   parent: deep_engineering/deep_engineering-index.md
-item_ids:
-  - nautec:focusing_lens
 ---
 
 # <Color id="light_purple">激光光学</Color>

@@ -79,4 +79,8 @@ public class CombustionDynamoMenu extends NTMachineMenu<CombustionDynamoBlockEnt
     public int getFuelPercent() {
         return data.get(CombustionDynamoBlockEntity.DATA_FUEL_PERCENT);
     }
+
+    public int getTicksPerMb() {
+        return data.get(CombustionDynamoBlockEntity.DATA_TICKS_PER_MB);
+    }
 }

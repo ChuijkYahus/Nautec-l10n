@@ -4,8 +4,6 @@ navigation:
   icon: nautec:flight_module
   position: 15
   parent: submarine/submarine-index.md
-item_ids:
-  - nautec:flight_module
 ---
 
 # <Color id="light_purple">飞行模块</Color>

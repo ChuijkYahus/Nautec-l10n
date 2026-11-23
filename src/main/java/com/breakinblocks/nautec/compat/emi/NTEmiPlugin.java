@@ -287,7 +287,9 @@ public class NTEmiPlugin implements EmiPlugin {
         for (EasInfusionEmiRecipe recipe : EasInfusionEmiRecipe.all()) {
             registry.addRecipe(recipe);
         }
-        registry.addRecipe(new CombustionFuelEmiRecipe());
+        for (CombustionDynamoBlockEntity.FuelGroup group : CombustionDynamoBlockEntity.fuelGroups()) {
+            registry.addRecipe(new CombustionFuelEmiRecipe(group));
+        }
 
         for (RecipeHolder<AugmentationRecipe> holder : manager.getAllRecipesFor(AugmentationRecipe.Type.INSTANCE)) {
             AugmentationRecipe recipe = holder.value();
